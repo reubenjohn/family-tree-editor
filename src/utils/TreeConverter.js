@@ -1,33 +1,51 @@
-const idRegex = new RegExp('[0-9]+(.[0-9])*');
-const parentIdRegex = new RegExp('([0-9]+(.[0-9])*)?.[0-9]+');
+const idRegex = /1(\.[1-9]+)*$/;
+const parentIdRegex = /(1(\.[1-9]+)*)\.[1-9]+$/;
 
 function extract(ancestryEntry, entryData, key) {
   if (!(key in entryData))
-    throw Error(`Entry "${ancestryEntry}" must have an key defined`);
+    throw Error(`Entry:
+
+${ancestryEntry}
+
+must have a '${key}' defined`);
   const val = entryData[key];
   delete entryData[key];
   return val;
 }
 
 function parseAncestryEntry(ancestryEntry) {
+  if (ancestryEntry.trim().length === 0)
+    return null;
+
   const entryData = {};
-  const lines = ancestryEntry.split('\n');
+  const lines = ancestryEntry.trim().split('\n');
 
   if (lines.length === 0)
     return null;
 
   lines
     .map(line => line.split('='))
-    .filter(def => def.length > 1)
     .forEach(def => {
+      if (def.length !== 2)
+        throw Error(`Malformed line "${def.join('=')}" in entry:
+
+${ancestryEntry}
+
+The expected format is: property=value`);
+      if (def[0] in entryData)
+        throw Error(`Entry:
+
+${ancestryEntry}
+
+has a duplicate property ${def[0]}'`);
       entryData[def[0]] = (def[1] || '').trim();
     });
   const id = extract(ancestryEntry, entryData, 'id');
   const name = extract(ancestryEntry, entryData, 'name');
-  if (!idRegex.test(id))
+  if (!id.match(idRegex))
     throw Error(`id must match pattern "${idRegex}" (eg: 1.2.1), but instead ${id} was found`);
   const matches = id.match(parentIdRegex);
-  const parentId = (matches !== null && matches.length > 1) ? matches[1] : null;
+  const parentId = (matches && matches.length > 1) ? matches[1] : null;
   return {id, parentId, data: {name, attributes: entryData, children: []}};
 }
 
