@@ -2,7 +2,7 @@
   "name": "rd3t-demo",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://reubenjohn.github.io/family-tree",
+  "homepage": "https://reubenjohn.github.io/family-tree-editor",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

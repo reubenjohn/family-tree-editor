@@ -245,11 +245,18 @@ class Editor extends Component {
 
                 <div className="prop-container">
                   <h3 className="prop">Save</h3>
-                  All data is lost when this page is refreshed.
-                  In order to save your changes, copy all your changes using the 'Copy Tree & Configurations' button
-                  below,
-                  and editing your own family tree's <a
-                  href="https://github.com/reubenjohn/family-tree/blob/master/src/data/data.json">data file</a>.
+                  Save your changes to avoid loosing your data.<br/>
+                  <h5>Steps to save your changes</h5>
+                  <ol>
+                    <li>Create a copy of this website (you only need to do this once)</li>
+                    <li>Copy all your changes using the 'Copy Tree & Configurations' button below</li>
+                    <li>Open your <a
+                      href="https://github.com/reubenjohn/family-tree/blob/master/src/data/data.json">data file</a> and
+                      paste your changes there.<br/>
+                      Finally, hit the 'Commit changes' button at the bottom.
+                    </li>
+                    <li>If all goes well, your changes should reflect in a few minutes once you refresh the page.</li>
+                  </ol>
                   <textarea style={{width: '100%'}}
                             value={JSON.stringify(this.generateDataAndConfigurations(), null, 2)}
                             disabled={true}/>
