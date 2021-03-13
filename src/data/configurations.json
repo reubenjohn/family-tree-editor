@@ -1,0 +1,50 @@
+{
+  "title": "My Family Tree",
+  "orientation": "vertical",
+  "translate": {
+    "x": 573.775,
+    "y": 476
+  },
+  "pathFunc": "diagonal",
+  "renderCustomNodeElement": "svg",
+  "collapsible": true,
+  "initialDepth": 1,
+  "zoomable": true,
+  "zoom": 1,
+  "scaleExtent": {
+    "min": 0.1,
+    "max": 1
+  },
+  "nodeSize": {
+    "x": 200,
+    "y": 200
+  },
+  "separation": {
+    "siblings": 2,
+    "nonSiblings": 2
+  },
+  "enableLegacyTransitions": false,
+  "transitionDuration": 500,
+  "depthFactor": null,
+  "styles": {
+    "nodes": {
+      "node": {
+        "circle": {
+          "fill": "#52e2c5"
+        },
+        "attributes": {
+          "stroke": "#000"
+        }
+      },
+      "leafNode": {
+        "circle": {
+          "fill": "transparent"
+        },
+        "attributes": {
+          "stroke": "#000"
+        }
+      }
+    }
+  },
+  "shouldCollapseNeighborNodes": false
+}
