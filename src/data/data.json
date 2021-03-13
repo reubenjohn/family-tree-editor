@@ -1,65 +1,117 @@
 {
-  "name": "CEO",
-  "children": [
-    {
-      "name": "Manager",
-      "attributes": {
-        "Department": "Production"
-      },
-      "children": [
-        {
-          "name": "Foreman",
-          "attributes": {
-            "Department": "Fabrication"
-          },
-          "children": [
-            {
-              "name": "Workers"
-            }
-          ]
-        },
-        {
-          "name": "Foreman",
-          "attributes": {
-            "Department": "Assembly"
-          },
-          "children": [
-            {
-              "name": "Workers"
-            }
-          ]
-        }
-      ]
+  "configurations": {
+    "title": "My Family Tree",
+    "orientation": "vertical",
+    "translate": {
+      "x": 573.775,
+      "y": 476
     },
-    {
-      "name": "Manager",
-      "attributes": {
-        "Department": "Marketing"
-      },
-      "children": [
-        {
-          "name": "Sales Officer",
-          "attributes": {
-            "Department": "A"
+    "pathFunc": "diagonal",
+    "renderCustomNodeElement": "svg",
+    "collapsible": true,
+    "initialDepth": 1,
+    "zoomable": true,
+    "zoom": 1,
+    "scaleExtent": {
+      "min": 0.1,
+      "max": 1
+    },
+    "nodeSize": {
+      "x": 200,
+      "y": 200
+    },
+    "separation": {
+      "siblings": 2,
+      "nonSiblings": 2
+    },
+    "enableLegacyTransitions": false,
+    "transitionDuration": 500,
+    "depthFactor": null,
+    "styles": {
+      "nodes": {
+        "node": {
+          "circle": {
+            "fill": "#52e2c5"
           },
-          "children": [
-            {
-              "name": "Salespeople"
-            }
-          ]
+          "attributes": {
+            "stroke": "#000"
+          }
         },
-        {
-          "name": "Sales Officer",
-          "attributes": {
-            "Department": "B"
+        "leafNode": {
+          "circle": {
+            "fill": "transparent"
           },
-          "children": [
-            {
-              "name": "Salespeople"
-            }
-          ]
+          "attributes": {
+            "stroke": "#000"
+          }
         }
-      ]
-    }
-  ]
+      }
+    },
+    "shouldCollapseNeighborNodes": false
+  },
+  "tree": {
+    "name": "CEO",
+    "children": [
+      {
+        "name": "Manager",
+        "attributes": {
+          "Department": "Production"
+        },
+        "children": [
+          {
+            "name": "Foreman",
+            "attributes": {
+              "Department": "Fabrication"
+            },
+            "children": [
+              {
+                "name": "Workers"
+              }
+            ]
+          },
+          {
+            "name": "Foreman",
+            "attributes": {
+              "Department": "Assembly"
+            },
+            "children": [
+              {
+                "name": "Workers"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Manager",
+        "attributes": {
+          "Department": "Marketing"
+        },
+        "children": [
+          {
+            "name": "Sales Officer",
+            "attributes": {
+              "Department": "A"
+            },
+            "children": [
+              {
+                "name": "Salespeople"
+              }
+            ]
+          },
+          {
+            "name": "Sales Officer",
+            "attributes": {
+              "Department": "B"
+            },
+            "children": [
+              {
+                "name": "Salespeople"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

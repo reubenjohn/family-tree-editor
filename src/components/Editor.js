@@ -6,7 +6,9 @@ import MixedNodeElement from './MixedNodeElement';
 import PureSvgNodeElement from './PureSvgNodeElement';
 import '../App.css';
 // Data data
-import orgChartJson from './../data/data.json';
+import data from './../data/data.json';
+
+const orgChartJson = data.tree;
 
 const customNodeFnMapping = {
   svg: {
@@ -50,11 +52,8 @@ const countNodes = (count = 0, n) => {
 };
 
 class Editor extends Component {
-  constructor() {
-    super();
-
-    this.addedNodesCount = 0;
-
+  constructor(props) {
+    super(props);
     this.state = {
       data: orgChartJson,
       totalNodeCount: countNodes(0, Array.isArray(orgChartJson) ? orgChartJson[0] : orgChartJson),
@@ -229,6 +228,11 @@ class Editor extends Component {
     shouldCollapseNeighborNodes: this.state.shouldCollapseNeighborNodes,
   });
 
+  generateDataAndConfigurations = () => ({
+    configurations: this.generateConfigs(),
+    tree: this.state.data
+  });
+
   render() {
     return (
       <div className="App">
@@ -238,37 +242,37 @@ class Editor extends Component {
               <div className="prop-container">
                 <h2 className="title">Family Tree Editor</h2>
                 <h3 className="title">v{version}</h3>
-                <h4 className="prop">Data (lost when the page is refreshed)</h4>
-                <div style={{marginBottom: '5px'}}>
+
+                <div className="prop-container">
+                  <h3 className="prop">Save</h3>
+                  All data is lost when this page is refreshed.
+                  In order to save your changes, copy all your changes using the 'Copy Tree & Configurations' button
+                  below,
+                  and editing your own family tree's <a
+                  href="https://github.com/reubenjohn/family-tree/blob/master/src/data/data.json">data file</a>.
                   <textarea style={{width: '100%'}}
-                            rows={12}
-                            value={JSON.stringify(orgChartJson, null, 2)}
-                            onChange={(event) => this.setTreeData(JSON.parse(event.target.value))}/>
+                            value={JSON.stringify(this.generateDataAndConfigurations(), null, 2)}
+                            disabled={true}/>
                   <button
                     type="button"
                     className="btn btn-block"
-                    onClick={() => navigator.clipboard.writeText(JSON.stringify(this.state.data, null, 2))}
+                    onClick={() => navigator.clipboard.writeText(JSON.stringify(this.generateDataAndConfigurations(), null, 2))}
                   >
-                    {'Copy All Data'}
+                    {'Copy Tree & Configurations'}
                   </button>
+                </div>
+
+                <h4 className="prop">Data</h4>
+                <div style={{marginBottom: '5px'}}>
+                  <textarea style={{width: '100%'}}
+                            rows={12}
+                            value={JSON.stringify(this.state.data, null, 2)}
+                            onChange={(event) => this.setTreeData(JSON.parse(event.target.value))}/>
                 </div>
               </div>
 
               <div className="prop-container">
                 <h3 className="prop">Configurations</h3>
-                <textarea style={{width: '100%'}}
-                          value={JSON.stringify(this.generateConfigs(), null, 2)}
-                          disabled={true}/>
-                <button
-                  type="button"
-                  className="btn btn-block"
-                  onClick={() => navigator.clipboard.writeText(JSON.stringify(this.generateConfigs(), null, 2))}
-                >
-                  {'Copy All Configurations'}
-                </button>
-              </div>
-
-              <div className="prop-container">
                 <h4 className="prop">Title</h4>
                 <input
                   type="text"
