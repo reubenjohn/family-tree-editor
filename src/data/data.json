@@ -51,67 +51,44 @@
     "shouldCollapseNeighborNodes": false
   },
   "tree": {
-    "name": "Name 1",
+    "name": "Cheriyan Alintethekkthil Pandalam",
+    "attributes": {
+      "Date Of Birth": "Unknown",
+      "Date Of Death": "Unknown"
+    },
     "children": [
       {
-        "name": "Manager",
+        "name": "Gheevarghese Cheriyan",
         "attributes": {
-          "Department": "Production"
+          "Date Of Birth": "Unknown",
+          "Date Of Death": "Unknown"
         },
         "children": [
           {
-            "name": "Foreman",
+            "name": "M. G. Cheria",
             "attributes": {
-              "Department": "Fabrication"
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
             },
-            "children": [
-              {
-                "name": "Workers"
-              }
-            ]
+            "children": null
           },
           {
-            "name": "Foreman",
+            "name": "M. G. Tommy",
             "attributes": {
-              "Department": "Assembly"
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
             },
-            "children": [
-              {
-                "name": "Workers"
-              }
-            ]
+            "children": null
           }
         ]
       },
       {
-        "name": "Manager",
+        "name": "Mathai Cheriyan",
         "attributes": {
-          "Department": "Marketing"
+          "Date Of Birth": "Unknown",
+          "Date Of Death": "Unknown"
         },
-        "children": [
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "A"
-            },
-            "children": [
-              {
-                "name": "Salespeople"
-              }
-            ]
-          },
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "B"
-            },
-            "children": [
-              {
-                "name": "Salespeople"
-              }
-            ]
-          }
-        ]
+        "children": null
       }
     ]
   }
