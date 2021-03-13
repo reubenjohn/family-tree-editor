@@ -251,7 +251,7 @@ class Editor extends Component {
                     <li>Create a copy of this website (you only need to do this once)</li>
                     <li>Copy all your changes using the 'Copy Tree & Configurations' button below</li>
                     <li>Open your <a
-                      href="https://github.com/reubenjohn/family-tree/blob/master/src/data/data.json">data file</a> and
+                      href={`${data.repositoryLink}/edit/master/src/data/data.json`}>data file</a> and
                       paste your changes there.<br/>
                       Finally, hit the 'Commit changes' button at the bottom.
                     </li>
