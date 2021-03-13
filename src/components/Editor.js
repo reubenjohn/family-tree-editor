@@ -7,7 +7,7 @@ import PureSvgNodeElement from './PureSvgNodeElement';
 import '../App.css';
 // Data data
 import data from './../data/data.json';
-import {parseAncestryNotation, printAncestryNotation} from "../utils/TreeConverter";
+import {parseAncestryNotation, printAncestryNotation} from '../utils/TreeConverter';
 
 const orgChartJson = data.tree;
 
@@ -57,6 +57,7 @@ class Editor extends Component {
     super(props);
     this.state = {
       data: orgChartJson,
+      proposedAncestry: printAncestryNotation(orgChartJson),
       totalNodeCount: countNodes(0, Array.isArray(orgChartJson) ? orgChartJson[0] : orgChartJson),
       title: 'My Family Tree',
       orientation: 'vertical',
@@ -97,8 +98,6 @@ class Editor extends Component {
       },
     };
 
-    this.setTreeData = this.setTreeData.bind(this);
-    this.setLargeTree = this.setLargeTree.bind(this);
     this.setTitle = this.setTitle.bind(this);
     this.setOrientation = this.setOrientation.bind(this);
     this.setPathFunc = this.setPathFunc.bind(this);
@@ -109,20 +108,6 @@ class Editor extends Component {
     this.setScaleExtent = this.setScaleExtent.bind(this);
     this.setSeparation = this.setSeparation.bind(this);
     this.setNodeSize = this.setNodeSize.bind(this);
-  }
-
-  setTreeData(data) {
-    this.setState({
-      data,
-      totalNodeCount: countNodes(0, Array.isArray(data) ? data[0] : data),
-    });
-  }
-
-  setLargeTree(data) {
-    this.setState({
-      data,
-      transitionDuration: 0,
-    });
   }
 
   setTitle(title) {
@@ -231,8 +216,21 @@ class Editor extends Component {
 
   generateDataAndConfigurations = () => ({
     configurations: this.generateConfigs(),
-    tree: this.state.data
+    tree: this.state.data,
   });
+
+  tryUpdateAncestry(notation) {
+    this.setState({proposedAncestry: notation});
+    try {
+      this.setState({
+        data: parseAncestryNotation(notation),
+        totalNodeCount: countNodes(0, Array.isArray(data) ? data[0] : data),
+        ancestryParsingError: null
+      });
+    } catch (e) {
+      this.setState({ancestryParsingError: e.message});
+    }
+  }
 
   render() {
     return (
@@ -272,10 +270,12 @@ class Editor extends Component {
 
                 <h4 className="prop">Ancestry</h4>
                 <div style={{marginBottom: '5px'}}>
-                  <textarea style={{width: '100%'}}
+                  <textarea style={{width: '100%', color: this.state.ancestryParsingError ? 'red' : 'black'}}
                             rows={12}
-                            value={printAncestryNotation(this.state.data)}
-                            onChange={(event) => this.setTreeData(parseAncestryNotation(event.target.value))}/>
+                            value={this.state.proposedAncestry}
+                            onChange={(event) => this.tryUpdateAncestry(event.target.value)}/>
+                  {this.state.ancestryParsingError &&
+                  <pre style={{color: 'red'}}>{this.state.ancestryParsingError}</pre>}
                 </div>
               </div>
 
