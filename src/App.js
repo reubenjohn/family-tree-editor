@@ -9,8 +9,6 @@ import './App.css';
 
 // Data examples
 import orgChartJson from './examples/org-chart.json';
-import flareJson from './examples/d3-hierarchy-flare.json';
-import reactTree from './examples/reactRepoTree';
 
 console.log('Demo React version: ', React.version);
 
@@ -64,7 +62,7 @@ class App extends Component {
     this.state = {
       data: orgChartJson,
       totalNodeCount: countNodes(0, Array.isArray(orgChartJson) ? orgChartJson[0] : orgChartJson),
-      orientation: 'horizontal',
+      orientation: 'vertical',
       translateX: 200,
       translateY: 300,
       collapsible: true,
@@ -247,31 +245,9 @@ class App extends Component {
                 <h3 className="title">
                   <a href="/family-tree/docs"><span role="img" aria-label="document">📖</span> API Docs (v2)</a>
                 </h3>
-                <h4 className="prop">Examples</h4>
+                <h4 className="prop">Data (lost when the page is refreshed)</h4>
                 <div style={{ marginBottom: '5px' }}>
-                  <button
-                    type="button"
-                    className="btn btn-controls btn-block"
-                    onClick={() => this.setTreeData(orgChartJson)}
-                  >
-                    Org chart (small)
-                  </button>
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    className="btn btn-controls btn-block"
-                    onClick={() => this.setTreeData(flareJson)}
-                  >
-                    d3-hierarchy - flare.json (medium)
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-controls btn-block"
-                    onClick={() => this.setTreeData(reactTree)}
-                  >
-                    React repository (large)
-                  </button>
+                  <textarea onChange={(event) => this.setTreeData(JSON.parse(event.target.value))}>{JSON.stringify(orgChartJson, null, 2)}</textarea>
                 </div>
               </div>
 
