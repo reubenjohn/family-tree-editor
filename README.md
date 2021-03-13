@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="#buildstatus">
-    <img alt="build status" src="https://github.com/reubenjohn/family-tree-editor/workflows/Build/badge.svg">
+    <img alt="build status" src="https://github.com/MJohnJoy/manappallil/workflows/Build/badge.svg">
   </a>
   <a href="https://github.com/prettier/prettier">
     <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg">
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <h3 align="center"><a href="https://reubenjohn.github.io/family-tree-editor">👾 Try it out now!</a></h3>
+  <h3 align="center"><a href="https://github.com/MJohnJoy/manappallil">👾 Try it out now!</a></h3>
 </p>
 
 A minimalist family tree editor and viewer hosted on GitHub Pages.
