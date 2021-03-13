@@ -51,7 +51,7 @@
     "shouldCollapseNeighborNodes": false
   },
   "tree": {
-    "name": "CEO",
+    "name": "Name 1",
     "children": [
       {
         "name": "Manager",
