@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <h3 align="center"><a href="https://reubenjohn.github.io/family-tree-editor">👾 Playground</a></h3>
+  <h3 align="center"><a href="https://reubenjohn.github.io/family-tree-editor">👾 Try it out now!</a></h3>
 </p>
 
 A minimalist family tree editor and viewer hosted on GitHub Pages.
@@ -18,38 +18,30 @@ It allows anyone without a technical background to create and host their family 
 It uses the [React D3 Tree library](https://github.com/bkrem/react-d3-tree) in order to generate a visual family tree from data that you input.
 
 ## Contents <!-- omit in toc -->
-- [Setting up your own family tree](#One Time Setup)
-- [Usage](#Usage)
-- [Development and Contributions](#Development and Contributions)
-- [Working with the default Tree](#working-with-the-default-tree)
-  - [Providing `data`](#providing-data)
-  - [Styling Nodes](#styling-nodes)
-  - [Styling Links](#styling-links)
-  - [Event Handlers](#event-handlers)
-- [Customizing the Tree](#customizing-the-tree)
-  - [`renderCustomNodeElement`](#rendercustomnodeelement)
-  - [`pathFunc`](#pathfunc)
-    - [Providing your own `pathFunc`](#providing-your-own-pathfunc)
-- [Development](#development)
-  - [Setup](#setup)
-  - [Hot reloading](#hot-reloading)
-- [Contributors](#contributors)
+- [Setting up your own family tree](#setting-up-your-own-family-tree-one-time-setup)
+- [Usage](#usage)
+- [Development and Contributions](#development-and-contributions)
 
-## One Time Setup
-1. Create a copy of this repository by clicking the 'Fork' button on the top right: ![Fork](screenshots/Fork.png)
-2. From your newly created repository, go to a file named 'data.json' by clicking the 'Go to file' button: ![Go to file](screenshots/go_to_file.png)
+## Setting up your own family tree (one time setup)
+1. Create a copy of this repository by clicking the 'Fork' button on the top right:  
+![Fork](screenshots/Fork.png)
+2. From your newly created repository, go to a file named 'data.json' by clicking the 'Go to file' button:  
+![Go to file](screenshots/go_to_file.png)
 Type `data.json`:  
 ![data.json](screenshots/data.json.png)
 3. Edit the file:  
 ![edit](screenshots/edit.png)  
 First update the `repositoryLink` to match that of your repository link in your browser. 
-Let's also give your family tree a title of your choosing: ![Family Tree Title](screenshots/family_tree_title.png)  
-4. Describe what your changed and click 'Commit changes': ![Commit changes](screenshots/commit.png)
+Let's also give your family tree a title of your choosing:  
+![Family Tree Title](screenshots/family_tree_title.png)  
+4. Describe what your changed and click 'Commit changes':  
+![Commit changes](screenshots/commit.png)
 5. This will trigger your family tree website to get generated with your latest changes!
 6. Switch to the 'Actions' tab to monitor its progress: ![Actions Tab](screenshots/actions_tab.png)
-7. The final step is to enable your website by switching to the 'Settings' tab ![Settings Tab](screenshots/settings_tab.png) 
+7. The final step is to enable your website by switching to the 'Settings' tab  
+![Settings Tab](screenshots/settings_tab.png) 
  and change the source branch to 'gh-page'  which should have been generated after step 6 is completed (you may have to wait a few minutes before it shows the gh-pages option):
-![GitHub Pages Settings](screenshots/github_pages_settings.png).
+![GitHub Pages Settings](screenshots/github_pages_settings.png)
 8. If it all goes well, you will be presented with the link to your site as shown in the screenshot above.
 Make sure you keep note of it! **It may take a few minutes for the link to start working.**
 
