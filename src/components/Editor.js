@@ -7,6 +7,7 @@ import PureSvgNodeElement from './PureSvgNodeElement';
 import '../App.css';
 // Data data
 import data from './../data/data.json';
+import {parseAncestryNotation, printAncestryNotation} from "../utils/TreeConverter";
 
 const orgChartJson = data.tree;
 
@@ -269,12 +270,12 @@ class Editor extends Component {
                   </button>
                 </div>
 
-                <h4 className="prop">Data</h4>
+                <h4 className="prop">Ancestry</h4>
                 <div style={{marginBottom: '5px'}}>
                   <textarea style={{width: '100%'}}
                             rows={12}
-                            value={JSON.stringify(this.state.data, null, 2)}
-                            onChange={(event) => this.setTreeData(JSON.parse(event.target.value))}/>
+                            value={printAncestryNotation(this.state.data)}
+                            onChange={(event) => this.setTreeData(parseAncestryNotation(event.target.value))}/>
                 </div>
               </div>
 
