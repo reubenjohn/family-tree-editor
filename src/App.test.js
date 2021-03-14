@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from '@testing-library/react';
-import Viewer from './components/Viewer';
 import {parseAncestryNotation, printAncestryNotation} from './utils/TreeConverter';
+import App from "./App";
 
 const linearAncestry = {
   notation: `id=1
@@ -43,7 +43,7 @@ test('tree converter prints ancestry notation', () => {
 });
 
 test('renders learn react link', () => {
-  const {getByText} = render(<Viewer/>);
+  const {getByText} = render(<App/>);
   const linkElement = getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });

@@ -1,16 +1,10 @@
 import React, {Component} from 'react';
-import Tree from 'react-d3-tree';
 import {version} from '../../package.json';
 import Switch from './Switch';
 import MixedNodeElement from './MixedNodeElement';
 import PureSvgNodeElement from './PureSvgNodeElement';
 import '../App.css';
-// Data data
-import data from './../data/data.json';
 import {parseAncestryNotation, printAncestryNotation} from '../utils/TreeConverter';
-
-const orgChartJson = data.tree;
-const configurations = data.configurations;
 
 const customNodeFnMapping = {
   svg: {
@@ -40,19 +34,6 @@ const customNodeFnMapping = {
   },
 };
 
-const countNodes = (count = 0, n) => {
-  // Count the current node
-  count += 1;
-
-  // Base case: reached a leaf node.
-  if (!n.children) {
-    return count;
-  }
-
-  // Keep traversing children while updating `count` until we reach the base case.
-  return n.children.reduce((sum, child) => countNodes(sum, child), count);
-};
-
 function getEditDataFileLink() {
   const matches = window.location.href.match(/https:\/\/(.*)\.github.io\/(.*)\//);
   if (!matches || matches.length < 3) {
@@ -67,72 +48,87 @@ class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: orgChartJson,
-      proposedAncestry: printAncestryNotation(orgChartJson),
-      totalNodeCount: countNodes(0, Array.isArray(orgChartJson) ? orgChartJson[0] : orgChartJson),
-      ...configurations,
+      proposedAncestry: printAncestryNotation(props.data.tree),
+      ancestryParsingError: null,
     };
 
+    this.handleConfigChange = this.handleConfigChange.bind(this);
     this.setTitle = this.setTitle.bind(this);
     this.setOrientation = this.setOrientation.bind(this);
     this.setPathFunc = this.setPathFunc.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleStringChange = this.handleStringChange.bind(this);
     this.handleFloatChange = this.handleFloatChange.bind(this);
     this.toggleCollapsible = this.toggleCollapsible.bind(this);
     this.toggleZoomable = this.toggleZoomable.bind(this);
     this.setScaleExtent = this.setScaleExtent.bind(this);
     this.setSeparation = this.setSeparation.bind(this);
     this.setNodeSize = this.setNodeSize.bind(this);
+    this.toggleLegacyTransitions = this.toggleLegacyTransitions.bind(this);
   }
 
-  generateConfigs = () => ({
-    title: this.state.title,
-    orientation: this.state.orientation,
-    translateX: this.state.translateX,
-    translateY: this.state.translateY,
-    pathFunc: this.state.pathFunc,
-    renderCustomNodeElement: this.state.renderCustomNodeElement,
-    collapsible: this.state.collapsible,
-    shouldCollapseNeighborNodes: this.state.shouldCollapseNeighborNodes,
-    initialDepth: this.state.initialDepth,
-    depthFactor: this.state.depthFactor,
-    zoomable: this.state.zoomable,
-    zoom: this.state.zoom,
-    scaleExtent: this.state.scaleExtent,
-    separation: this.state.separation,
-    nodeSize: this.state.nodeSize,
-    enableLegacyTransitions: this.state.enableLegacyTransitions,
-    transitionDuration: this.state.transitionDuration,
-    styles: this.state.styles,
-  });
+  handleConfigChange(state) {
+    if (!this.props.onDataChange)
+      return;
+    if (typeof state === 'function') {
+      state = state(this.props.data.configurations);
+    }
+    this.props.onDataChange({
+      tree: this.props.data.tree,
+      configurations: {...this.props.data.configurations, ...state}
+    });
+  }
 
-  generateDataAndConfigurations = () => ({
-    configurations: this.generateConfigs(),
-    tree: this.state.data,
-  });
+  tryUpdateAncestry(notation) {
+    this.setState({proposedAncestry: notation});
+    try {
+      this.setState({
+        ancestryParsingError: null
+      });
+      this.props.onDataChange({
+        tree: parseAncestryNotation(notation),
+        configurations: this.props.data.configurations
+      });
+    } catch (e) {
+      this.setState({ancestryParsingError: e.message});
+    }
+  }
 
   setTitle(title) {
-    this.setState({title});
+    this.handleConfigChange({title});
   }
 
   setOrientation(orientation) {
-    this.setState({orientation});
+    this.handleConfigChange({orientation});
   }
 
   setPathFunc(pathFunc) {
-    this.setState({pathFunc});
+    this.handleConfigChange({pathFunc});
   }
 
   handleChange(evt) {
     const target = evt.target;
     const parsedIntValue = parseInt(target.value, 10);
     if (target.value === '') {
-      this.setState({
+      this.handleConfigChange({
         [target.name]: undefined,
       });
     } else if (!isNaN(parsedIntValue)) {
-      this.setState({
+      this.handleConfigChange({
         [target.name]: parsedIntValue,
+      });
+    }
+  }
+
+  handleStringChange(evt) {
+    const {name, value} = evt.target;
+    if (value === '') {
+      this.handleConfigChange({
+        [name]: undefined,
+      });
+    } else {
+      this.handleConfigChange({
+        [name]: value,
       });
     }
   }
@@ -141,456 +137,372 @@ class Editor extends Component {
     const target = evt.target;
     const parsedFloatValue = parseFloat(target.value);
     if (target.value === '') {
-      this.setState({
+      this.handleConfigChange({
         [target.name]: undefined,
       });
     } else if (!isNaN(parsedFloatValue)) {
-      this.setState({
+      this.handleConfigChange({
         [target.name]: parsedFloatValue,
       });
     }
   }
 
-  handleCustomNodeFnChange = evt => {
-    const customNodeKey = evt.target.value;
-
-    this.setState({renderCustomNodeElement: customNodeKey});
-  };
-
   toggleCollapsible() {
-    this.setState(prevState => ({collapsible: !prevState.collapsible}));
+    this.handleConfigChange(prevState => ({collapsible: !prevState.collapsible}));
   }
 
   toggleCollapseNeighborNodes = () => {
-    this.setState(prevState => ({
+    this.handleConfigChange(prevState => ({
       shouldCollapseNeighborNodes: !prevState.shouldCollapseNeighborNodes,
     }));
   };
 
   toggleZoomable() {
-    this.setState(prevState => ({zoomable: !prevState.zoomable}));
+    this.handleConfigChange(prevState => ({zoomable: !prevState.zoomable}));
   }
 
   setScaleExtent(scaleExtent) {
-    this.setState({scaleExtent});
+    this.handleConfigChange({scaleExtent});
   }
 
   setSeparation(separation) {
     if (!isNaN(separation.siblings) && !isNaN(separation.nonSiblings)) {
-      this.setState({separation});
+      this.handleConfigChange({separation});
     }
   }
 
   setNodeSize(nodeSize) {
     if (!isNaN(nodeSize.x) && !isNaN(nodeSize.y)) {
-      this.setState({nodeSize});
+      this.handleConfigChange({nodeSize});
     }
   }
 
-  componentDidMount() {
-    const dimensions = this.treeContainer.getBoundingClientRect();
-    this.setState({
-      translate: {x: dimensions.width / 2.5, y: dimensions.height / 2},
-    });
-  }
-
-  tryUpdateAncestry(notation) {
-    this.setState({proposedAncestry: notation});
-    try {
-      this.setState({
-        data: parseAncestryNotation(notation),
-        totalNodeCount: countNodes(0, Array.isArray(data) ? data[0] : data),
-        ancestryParsingError: null
-      });
-    } catch (e) {
-      this.setState({ancestryParsingError: e.message});
-    }
+  toggleLegacyTransitions() {
+    this.handleConfigChange(prevState => ({
+      enableLegacyTransitions: !prevState.enableLegacyTransitions,
+    }));
   }
 
   render() {
     return (
-      <div className="App">
-        <div className="demo-container">
-          <div className="column-left">
-            <div className="controls-container">
-              <div className="prop-container">
-                <h2 className="title">Family Tree Editor</h2>
-                <h3 className="title">v{version}</h3>
+      <div className="column-left">
+        <div className="controls-container">
+          <div className="prop-container">
+            <h2 className="title">Family Tree Editor</h2>
+            <h3 className="title">v{version}</h3>
 
-                <div className="prop-container">
-                  <h3 className="prop">Save</h3>
-                  Save your changes to avoid loosing your data.<br/>
-                  <h5>Steps to save your changes</h5>
-                  <ol>
-                    <li>Create a copy of this website (you only need to do this once)</li>
-                    <li>Copy all your changes using the 'Copy Tree & Configurations' button below</li>
-                    <li>Open your <a
-                      href={getEditDataFileLink()}
-                      target='_blank'
-                      rel='noopener noreferrer'>data file</a> and
-                      paste your changes there.<br/>
-                      Finally, hit the 'Commit changes' button at the bottom.
-                    </li>
-                    <li>If all goes well, your changes should reflect in a few minutes once you refresh the page.</li>
-                  </ol>
-                  <textarea style={{width: '100%'}}
-                            value={JSON.stringify(this.generateDataAndConfigurations(), null, 2)}
-                            disabled={true}/>
-                  <button
-                    type="button"
-                    className="btn btn-block"
-                    onClick={() => navigator.clipboard.writeText(JSON.stringify(this.generateDataAndConfigurations(), null, 2))}
-                  >
-                    {'Copy Tree & Configurations'}
-                  </button>
-                </div>
+            <div className="prop-container">
+              <h3 className="prop">Save</h3>
+              Save your changes to avoid loosing your data.<br/>
+              <h5>Steps to save your changes</h5>
+              <ol>
+                <li>Copy all your changes using the 'Copy Tree & Configurations' button below</li>
+                <li>Open your <a
+                  href={getEditDataFileLink()}
+                  target='_blank'
+                  rel='noopener noreferrer'>data file</a> and
+                  paste your changes there.<br/>
+                  Finally, hit the 'Commit changes' button at the bottom.
+                </li>
+                <li>If all goes well, your changes should reflect in a few minutes once you refresh the page.</li>
+              </ol>
 
-                <h4 className="prop">Ancestry</h4>
-                <div style={{marginBottom: '5px'}}>
+              <button
+                type="button"
+                className="btn btn-block"
+                onClick={() => navigator.clipboard.writeText(JSON.stringify(this.props.data, null, 2))}
+              >
+                {'Copy Tree & Configurations'}
+              </button>
+            </div>
+
+            <h4 className="prop">Ancestry</h4>
+            <div style={{marginBottom: '5px'}}>
                   <textarea style={{width: '100%', color: this.state.ancestryParsingError ? 'red' : 'black'}}
                             rows={12}
                             value={this.state.proposedAncestry}
                             onChange={(event) => this.tryUpdateAncestry(event.target.value)}/>
-                  {this.state.ancestryParsingError &&
-                  <pre style={{color: 'red'}}>{this.state.ancestryParsingError}</pre>}
-                </div>
-              </div>
-
-              <div className="prop-container">
-                <h3 className="prop">Configurations</h3>
-                <h4 className="prop">Title</h4>
-                <input
-                  type="text"
-                  value={this.state.title}
-                  onChange={(event) => this.setTitle(event.target.value)}
-                />
-              </div>
-
-              <div className="prop-container">
-                <h4 className="prop">Orientation</h4>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setOrientation('horizontal')}
-                >
-                  {'Horizontal'}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setOrientation('vertical')}
-                >
-                  {'Vertical'}
-                </button>
-              </div>
-
-              <div className="prop-container">
-                <h4 className="prop">Path Function</h4>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setPathFunc('diagonal')}
-                >
-                  {'Diagonal'}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setPathFunc('elbow')}
-                >
-                  {'Elbow'}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setPathFunc('straight')}
-                >
-                  {'Straight'}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-controls btn-block"
-                  onClick={() => this.setPathFunc('step')}
-                >
-                  {'Step'}
-                </button>
-              </div>
-
-              <div className="prop-container">
-                <label className="prop" htmlFor="customNodeElement">
-                  Custom Node Element
-                </label>
-                <select className="form-control" onChange={this.handleCustomNodeFnChange}>
-                  {Object.entries(customNodeFnMapping).map(([key, {description}]) => (
-                    <option key={key} value={key}>
-                      {description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="prop-container">
-                <h4 className="prop">Collapsible</h4>
-                <Switch
-                  name="collapsibleBtn"
-                  checked={this.state.collapsible}
-                  onChange={this.toggleCollapsible}
-                />
-              </div>
-
-              <div className="prop-container">
-                <h4 className="prop">Collapse neighbor nodes</h4>
-                <Switch
-                  name="collapseNeighborsBtn"
-                  checked={this.state.shouldCollapseNeighborNodes}
-                  onChange={this.toggleCollapseNeighborNodes}
-                />
-              </div>
-
-              <div className="prop-container">
-                <h4 className="prop">Enable Legacy Transitions</h4>
-                <Switch
-                  name="enableLegacyTransitionsBtn"
-                  checked={this.state.enableLegacyTransitions}
-                  onChange={() =>
-                    this.setState(prevState => ({
-                      enableLegacyTransitions: !prevState.enableLegacyTransitions,
-                    }))
-                  }
-                />
-              </div>
-
-              <div className="prop-container">
-                <div>
-                  <label className="prop" htmlFor="translateX">
-                    Translate X
-                  </label>
-                  <input
-                    className="form-control"
-                    name="translateX"
-                    type="number"
-                    value={this.state.translateX}
-                    onChange={this.handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="prop" htmlFor="translateY">
-                    Translate Y
-                  </label>
-                  <input
-                    className="form-control"
-                    name="translateY"
-                    type="number"
-                    value={this.state.translateY}
-                    onChange={this.handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="prop-container">
-                <label className="prop" htmlFor="initialDepth">
-                  Initial Depth
-                </label>
-                <input
-                  className="form-control"
-                  style={{color: 'grey'}}
-                  name="initialDepth"
-                  type="text"
-                  value={this.state.initialDepth}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div className="prop-container">
-                <label className="prop" htmlFor="depthFactor">
-                  Depth Factor
-                </label>
-                <input
-                  className="form-control"
-                  name="depthFactor"
-                  type="number"
-                  defaultValue={this.state.depthFactor}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              {/* <div className="prop-container prop">{`Zoomable: ${this.state.zoomable}`}</div> */}
-
-              <div className="prop-container">
-                <label className="prop" htmlFor="zoom">
-                  Zoom
-                </label>
-                <input
-                  className="form-control"
-                  name="zoom"
-                  type="number"
-                  defaultValue={this.state.zoom}
-                  onChange={this.handleFloatChange}
-                />
-              </div>
-
-              <div className="prop-container">
-                <span className="prop prop-large">Scale Extent</span>
-                <label className="sub-prop" htmlFor="scaleExtentMin">
-                  Min
-                </label>
-                <input
-                  className="form-control"
-                  name="scaleExtentMin"
-                  type="number"
-                  defaultValue={this.state.scaleExtent.min}
-                  onChange={evt =>
-                    this.setScaleExtent({
-                      min: parseFloat(evt.target.value),
-                      max: this.state.scaleExtent.max,
-                    })
-                  }
-                />
-                <label className="sub-prop" htmlFor="scaleExtentMax">
-                  Max
-                </label>
-                <input
-                  className="form-control"
-                  name="scaleExtentMax"
-                  type="number"
-                  defaultValue={this.state.scaleExtent.max}
-                  onChange={evt =>
-                    this.setScaleExtent({
-                      min: this.state.scaleExtent.min,
-                      max: parseFloat(evt.target.value),
-                    })
-                  }
-                />
-              </div>
-
-              <div className="prop-container">
-                <span className="prop prop-large">Node separation</span>
-                <label className="sub-prop" htmlFor="separationSiblings">
-                  Siblings
-                </label>
-                <input
-                  className="form-control"
-                  name="separationSiblings"
-                  type="number"
-                  defaultValue={this.state.separation.siblings}
-                  onChange={evt =>
-                    this.setSeparation({
-                      siblings: parseFloat(evt.target.value),
-                      nonSiblings: this.state.separation.nonSiblings,
-                    })
-                  }
-                />
-                <label className="sub-prop" htmlFor="separationNonSiblings">
-                  Non-Siblings
-                </label>
-                <input
-                  className="form-control"
-                  name="separationNonSiblings"
-                  type="number"
-                  defaultValue={this.state.separation.nonSiblings}
-                  onChange={evt =>
-                    this.setSeparation({
-                      siblings: this.state.separation.siblings,
-                      nonSiblings: parseFloat(evt.target.value),
-                    })
-                  }
-                />
-              </div>
-
-              <div className="prop-container">
-                <span className="prop prop-large">Node size</span>
-                <label className="sub-prop" htmlFor="nodeSizeX">
-                  X
-                </label>
-                <input
-                  className="form-control"
-                  name="nodeSizeX"
-                  type="number"
-                  defaultValue={this.state.nodeSize.x}
-                  onChange={evt =>
-                    this.setNodeSize({x: parseFloat(evt.target.value), y: this.state.nodeSize.y})
-                  }
-                />
-                <label className="sub-prop" htmlFor="nodeSizeY">
-                  Y
-                </label>
-                <input
-                  className="form-control"
-                  name="nodeSizeY"
-                  type="number"
-                  defaultValue={this.state.nodeSize.y}
-                  onChange={evt =>
-                    this.setNodeSize({x: this.state.nodeSize.x, y: parseFloat(evt.target.value)})
-                  }
-                />
-              </div>
-
-              <div className="prop-container">
-                <label className="prop" htmlFor="transitionDuration">
-                  Transition Duration
-                </label>
-                <input
-                  className="form-control"
-                  name="transitionDuration"
-                  type="number"
-                  value={this.state.transitionDuration}
-                  onChange={this.handleChange}
-                />
-              </div>
+              {this.state.ancestryParsingError &&
+              <pre style={{color: 'red'}}>{this.state.ancestryParsingError}</pre>}
             </div>
           </div>
 
-          <div className="column-right">
-            <div className="tree-stats-container">
-              Total nodes in tree: {this.state.totalNodeCount}
-            </div>
-            <div ref={tc => (this.treeContainer = tc)} className="tree-container">
-              <Tree
-                data={this.state.data}
-                renderCustomNodeElement={
-                  this.state.renderCustomNodeElement
-                    ? rd3tProps => customNodeFnMapping[this.state.renderCustomNodeElement].fn(rd3tProps, this.state)
-                    : undefined
-                }
-                rootNodeClassName="demo-node"
-                branchNodeClassName="demo-node"
-                orientation={this.state.orientation}
-                translate={{x: this.state.translateX, y: this.state.translateY}}
-                pathFunc={this.state.pathFunc}
-                collapsible={this.state.collapsible}
-                initialDepth={this.state.initialDepth}
-                zoomable={this.state.zoomable}
-                zoom={this.state.zoom}
-                scaleExtent={this.state.scaleExtent}
-                nodeSize={this.state.nodeSize}
-                separation={this.state.separation}
-                enableLegacyTransitions={this.state.enableLegacyTransitions}
-                transitionDuration={this.state.transitionDuration}
-                depthFactor={this.state.depthFactor}
-                styles={this.state.styles}
-                shouldCollapseNeighborNodes={this.state.shouldCollapseNeighborNodes}
-                // onUpdate={(...args) => {console.log(args)}}
-                onNodeClick={(...args) => {
-                  console.log('onNodeClick');
-                  console.log(args);
-                }}
-                onNodeMouseOver={(...args) => {
-                  console.log('onNodeMouseOver', args);
-                }}
-                onNodeMouseOut={(...args) => {
-                  console.log('onNodeMouseOut', args);
-                }}
-                onLinkClick={(...args) => {
-                  console.log(args);
-                }}
-                onLinkMouseOver={(...args) => {
-                  console.log('onLinkMouseOver', args);
-                }}
-                onLinkMouseOut={(...args) => {
-                  console.log('onLinkMouseOut', args);
-                }}
+          <div className="prop-container">
+            <h3 className="prop">Configurations</h3>
+            <h4 className="prop">Title</h4>
+            <input
+              type="text"
+              value={this.props.data.configurations.title}
+              onChange={(event) => this.setTitle(event.target.value)}
+            />
+          </div>
+
+          <div className="prop-container">
+            <h4 className="prop">Orientation</h4>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setOrientation('horizontal')}
+            >
+              {'Horizontal'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setOrientation('vertical')}
+            >
+              {'Vertical'}
+            </button>
+          </div>
+
+          <div className="prop-container">
+            <h4 className="prop">Path Function</h4>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setPathFunc('diagonal')}
+            >
+              {'Diagonal'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setPathFunc('elbow')}
+            >
+              {'Elbow'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setPathFunc('straight')}
+            >
+              {'Straight'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-controls btn-block"
+              onClick={() => this.setPathFunc('step')}
+            >
+              {'Step'}
+            </button>
+          </div>
+
+          <div className="prop-container">
+            <label className="prop" htmlFor="customNodeElement">
+              Custom Node Element
+            </label>
+            <select className="form-control" name="renderCustomNodeElement" onChange={this.handleStringChange}>
+              {Object.entries(customNodeFnMapping).map(([key, {description}]) => (
+                <option key={key} value={key}>
+                  {description}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="prop-container">
+            <h4 className="prop">Collapsible</h4>
+            <Switch
+              name="collapsibleBtn"
+              checked={this.props.data.configurations.collapsible}
+              onChange={this.toggleCollapsible}
+            />
+          </div>
+
+          <div className="prop-container">
+            <h4 className="prop">Collapse neighbor nodes</h4>
+            <Switch
+              name="collapseNeighborsBtn"
+              checked={this.props.data.configurations.shouldCollapseNeighborNodes}
+              onChange={this.toggleCollapseNeighborNodes}
+            />
+          </div>
+
+          <div className="prop-container">
+            <h4 className="prop">Enable Legacy Transitions</h4>
+            <Switch
+              name="enableLegacyTransitionsBtn"
+              checked={this.props.data.configurations.enableLegacyTransitions}
+              onChange={this.toggleLegacyTransitions}
+            />
+          </div>
+
+          <div className="prop-container">
+            <div>
+              <label className="prop" htmlFor="translateX">
+                Translate X
+              </label>
+              <input
+                className="form-control"
+                name="translateX"
+                type="number"
+                value={this.props.data.configurations.translateX}
+                onChange={this.handleChange}
               />
             </div>
+            <div>
+              <label className="prop" htmlFor="translateY">
+                Translate Y
+              </label>
+              <input
+                className="form-control"
+                name="translateY"
+                type="number"
+                value={this.props.data.configurations.translateY}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="prop-container">
+            <label className="prop" htmlFor="initialDepth">
+              Initial Depth
+            </label>
+            <input
+              className="form-control"
+              style={{color: 'grey'}}
+              name="initialDepth"
+              type="text"
+              value={this.props.data.configurations.initialDepth}
+              onChange={this.handleChange}
+            />
+          </div>
+
+          <div className="prop-container">
+            <label className="prop" htmlFor="depthFactor">
+              Depth Factor
+            </label>
+            <input
+              className="form-control"
+              name="depthFactor"
+              type="number"
+              defaultValue={this.props.data.configurations.depthFactor}
+              onChange={this.handleChange}
+            />
+          </div>
+
+          {/* <div className="prop-container prop">{`Zoomable: ${this.state.zoomable}`}</div> */}
+
+          <div className="prop-container">
+            <label className="prop" htmlFor="zoom">
+              Zoom
+            </label>
+            <input
+              className="form-control"
+              name="zoom"
+              type="number"
+              defaultValue={this.props.data.configurations.zoom}
+              onChange={this.handleFloatChange}
+            />
+          </div>
+
+          <div className="prop-container">
+            <span className="prop prop-large">Scale Extent</span>
+            <label className="sub-prop" htmlFor="scaleExtentMin">
+              Min
+            </label>
+            <input
+              className="form-control"
+              name="scaleExtentMin"
+              type="number"
+              defaultValue={this.props.data.configurations.scaleExtent.min}
+              onChange={evt =>
+                this.setScaleExtent({
+                  min: parseFloat(evt.target.value),
+                  max: this.props.data.configurations.scaleExtent.max,
+                })
+              }
+            />
+            <label className="sub-prop" htmlFor="scaleExtentMax">
+              Max
+            </label>
+            <input
+              className="form-control"
+              name="scaleExtentMax"
+              type="number"
+              defaultValue={this.props.data.configurations.scaleExtent.max}
+              onChange={evt =>
+                this.setScaleExtent({
+                  min: this.props.data.configurations.scaleExtent.min,
+                  max: parseFloat(evt.target.value),
+                })
+              }
+            />
+          </div>
+
+          <div className="prop-container">
+            <span className="prop prop-large">Node separation</span>
+            <label className="sub-prop" htmlFor="separationSiblings">
+              Siblings
+            </label>
+            <input
+              className="form-control"
+              name="separationSiblings"
+              type="number"
+              defaultValue={this.props.data.configurations.separation.siblings}
+              onChange={evt =>
+                this.setSeparation({
+                  siblings: parseFloat(evt.target.value),
+                  nonSiblings: this.props.data.configurations.separation.nonSiblings,
+                })
+              }
+            />
+            <label className="sub-prop" htmlFor="separationNonSiblings">
+              Non-Siblings
+            </label>
+            <input
+              className="form-control"
+              name="separationNonSiblings"
+              type="number"
+              defaultValue={this.props.data.configurations.separation.nonSiblings}
+              onChange={evt =>
+                this.setSeparation({
+                  siblings: this.props.data.configurations.separation.siblings,
+                  nonSiblings: parseFloat(evt.target.value),
+                })
+              }
+            />
+          </div>
+
+          <div className="prop-container">
+            <span className="prop prop-large">Node size</span>
+            <label className="sub-prop" htmlFor="nodeSizeX">
+              X
+            </label>
+            <input
+              className="form-control"
+              name="nodeSizeX"
+              type="number"
+              defaultValue={this.props.data.configurations.nodeSize.x}
+              onChange={evt =>
+                this.setNodeSize({x: parseFloat(evt.target.value), y: this.props.data.configurations.nodeSize.y})
+              }
+            />
+            <label className="sub-prop" htmlFor="nodeSizeY">
+              Y
+            </label>
+            <input
+              className="form-control"
+              name="nodeSizeY"
+              type="number"
+              defaultValue={this.props.data.configurations.nodeSize.y}
+              onChange={evt =>
+                this.setNodeSize({x: this.props.data.configurations.nodeSize.x, y: parseFloat(evt.target.value)})
+              }
+            />
+          </div>
+
+          <div className="prop-container">
+            <label className="prop" htmlFor="transitionDuration">
+              Transition Duration
+            </label>
+            <input
+              className="form-control"
+              name="transitionDuration"
+              type="number"
+              value={this.props.data.configurations.transitionDuration}
+              onChange={this.handleChange}
+            />
           </div>
         </div>
       </div>
