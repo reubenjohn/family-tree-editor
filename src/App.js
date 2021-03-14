@@ -19,7 +19,7 @@ class App extends Component {
       <div className="App">
         <div className="demo-container">
           <button title={'Edit'}
-                  onClick={() => this.toggleEditMode()}/>
+                  onClick={this.toggleEditMode}/>
           {this.state.editMode &&
           <Editor data={this.state.data}
                   onDataChange={newData => this.setState({data: newData})}/>}
@@ -32,13 +32,7 @@ class App extends Component {
   }
 
   toggleEditMode() {
-    if (this.state.editMode) {
-      if (window.confirm(`Leaving edit mode without saving your changes first will result in you loosing your changes!
-Are you sure you want to proceed?`))
-        this.setState({...this.state, editMode: false})
-    } else {
-      this.setState({...this.state, editMode: true})
-    }
+    this.setState({editMode: !this.state.editMode})
   }
 }
 

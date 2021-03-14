@@ -43,7 +43,8 @@ has a duplicate property ${def[0]}'`);
   const id = extract(ancestryEntry, entryData, 'id');
   const name = extract(ancestryEntry, entryData, 'name');
   if (!id.match(idRegex))
-    throw Error(`id must match pattern "${idRegex}" (eg: 1.2.1), but instead ${id} was found`);
+    throw Error(`id must match pattern "${idRegex}" (eg: 1.2.1),
+but instead ${id} was found`);
   const matches = id.match(parentIdRegex);
   const parentId = (matches && matches.length > 1) ? matches[1] : null;
   return {id, parentId, data: {name, attributes: entryData, children: []}};

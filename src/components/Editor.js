@@ -5,6 +5,7 @@ import MixedNodeElement from './MixedNodeElement';
 import PureSvgNodeElement from './PureSvgNodeElement';
 import '../App.css';
 import {parseAncestryNotation, printAncestryNotation} from '../utils/TreeConverter';
+import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 
 const customNodeFnMapping = {
   svg: {
@@ -185,14 +186,17 @@ class Editor extends Component {
 
   render() {
     return (
-      <div className="column-left">
-        <div className="controls-container">
-          <div className="prop-container">
-            <h2 className="title">Family Tree Editor</h2>
-            <h3 className="title">v{version}</h3>
+      <div className="column-left flex-container-vertical">
+        <h2 className="title flex-conservative">Family Tree Editor v{version}</h2>
 
+        <Tabs className="controls-container flex-container-vertical flex-greedy">
+          <TabList className="flex-conservative">
+            <Tab>Save / Export</Tab>
+            <Tab>Ancestry</Tab>
+            <Tab>Configurations</Tab>
+          </TabList>
+          <TabPanel className="controls-container">
             <div className="prop-container">
-              <h3 className="prop">Save</h3>
               Save your changes to avoid loosing your data.<br/>
               <h5>Steps to save your changes</h5>
               <ol>
@@ -215,296 +219,294 @@ class Editor extends Component {
                 {'Copy Tree & Configurations'}
               </button>
             </div>
-
-            <h4 className="prop">Ancestry</h4>
-            <div style={{marginBottom: '5px'}}>
-                  <textarea style={{width: '100%', color: this.state.ancestryParsingError ? 'red' : 'black'}}
-                            rows={12}
-                            value={this.state.proposedAncestry}
-                            onChange={(event) => this.tryUpdateAncestry(event.target.value)}/>
-              {this.state.ancestryParsingError &&
-              <pre style={{color: 'red'}}>{this.state.ancestryParsingError}</pre>}
+          </TabPanel>
+          <TabPanel className="controls-container flex-container-vertical flex-greedy">
+            {this.state.ancestryParsingError &&
+            <pre className="flex-conservative" style={{color: 'red',}}>{this.state.ancestryParsingError}</pre>}
+            <textarea className="flex-greedy"
+                      style={{width: '100%', margin: '4px', color: this.state.ancestryParsingError ? 'red' : 'black'}}
+                      value={this.state.proposedAncestry}
+                      onChange={(event) => this.tryUpdateAncestry(event.target.value)}/>
+          </TabPanel>
+          <TabPanel className="controls-container">
+            <div className="prop-container">
+              <h4 className="prop">Title</h4>
+              <input
+                type="text"
+                value={this.props.data.configurations.title}
+                onChange={(event) => this.setTitle(event.target.value)}
+              />
             </div>
-          </div>
 
-          <div className="prop-container">
-            <h3 className="prop">Configurations</h3>
-            <h4 className="prop">Title</h4>
-            <input
-              type="text"
-              value={this.props.data.configurations.title}
-              onChange={(event) => this.setTitle(event.target.value)}
-            />
-          </div>
+            <div className="prop-container">
+              <h4 className="prop">Orientation</h4>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setOrientation('horizontal')}
+              >
+                {'Horizontal'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setOrientation('vertical')}
+              >
+                {'Vertical'}
+              </button>
+            </div>
 
-          <div className="prop-container">
-            <h4 className="prop">Orientation</h4>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setOrientation('horizontal')}
-            >
-              {'Horizontal'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setOrientation('vertical')}
-            >
-              {'Vertical'}
-            </button>
-          </div>
+            <div className="prop-container">
+              <h4 className="prop">Path Function</h4>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setPathFunc('diagonal')}
+              >
+                {'Diagonal'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setPathFunc('elbow')}
+              >
+                {'Elbow'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setPathFunc('straight')}
+              >
+                {'Straight'}
+              </button>
+              <button
+                type="button"
+                className="btn btn-controls btn-block"
+                onClick={() => this.setPathFunc('step')}
+              >
+                {'Step'}
+              </button>
+            </div>
 
-          <div className="prop-container">
-            <h4 className="prop">Path Function</h4>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setPathFunc('diagonal')}
-            >
-              {'Diagonal'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setPathFunc('elbow')}
-            >
-              {'Elbow'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setPathFunc('straight')}
-            >
-              {'Straight'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-controls btn-block"
-              onClick={() => this.setPathFunc('step')}
-            >
-              {'Step'}
-            </button>
-          </div>
+            <div className="prop-container">
+              <label className="prop" htmlFor="customNodeElement">
+                Custom Node Element
+              </label>
+              <select className="form-control" name="renderCustomNodeElement" onChange={this.handleStringChange}>
+                {Object.entries(customNodeFnMapping).map(([key, {description}]) => (
+                  <option key={key} value={key}>
+                    {description}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div className="prop-container">
-            <label className="prop" htmlFor="customNodeElement">
-              Custom Node Element
-            </label>
-            <select className="form-control" name="renderCustomNodeElement" onChange={this.handleStringChange}>
-              {Object.entries(customNodeFnMapping).map(([key, {description}]) => (
-                <option key={key} value={key}>
-                  {description}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="prop-container">
+              <h4 className="prop">Collapsible</h4>
+              <Switch
+                name="collapsibleBtn"
+                checked={this.props.data.configurations.collapsible}
+                onChange={this.toggleCollapsible}
+              />
+            </div>
 
-          <div className="prop-container">
-            <h4 className="prop">Collapsible</h4>
-            <Switch
-              name="collapsibleBtn"
-              checked={this.props.data.configurations.collapsible}
-              onChange={this.toggleCollapsible}
-            />
-          </div>
+            <div className="prop-container">
+              <h4 className="prop">Collapse neighbor nodes</h4>
+              <Switch
+                name="collapseNeighborsBtn"
+                checked={this.props.data.configurations.shouldCollapseNeighborNodes}
+                onChange={this.toggleCollapseNeighborNodes}
+              />
+            </div>
 
-          <div className="prop-container">
-            <h4 className="prop">Collapse neighbor nodes</h4>
-            <Switch
-              name="collapseNeighborsBtn"
-              checked={this.props.data.configurations.shouldCollapseNeighborNodes}
-              onChange={this.toggleCollapseNeighborNodes}
-            />
-          </div>
+            <div className="prop-container">
+              <h4 className="prop">Enable Legacy Transitions</h4>
+              <Switch
+                name="enableLegacyTransitionsBtn"
+                checked={this.props.data.configurations.enableLegacyTransitions}
+                onChange={this.toggleLegacyTransitions}
+              />
+            </div>
 
-          <div className="prop-container">
-            <h4 className="prop">Enable Legacy Transitions</h4>
-            <Switch
-              name="enableLegacyTransitionsBtn"
-              checked={this.props.data.configurations.enableLegacyTransitions}
-              onChange={this.toggleLegacyTransitions}
-            />
-          </div>
+            <div className="prop-container">
+              <div>
+                <label className="prop" htmlFor="translateX">
+                  Translate X
+                </label>
+                <input
+                  className="form-control"
+                  name="translateX"
+                  type="number"
+                  value={this.props.data.configurations.translateX}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div>
+                <label className="prop" htmlFor="translateY">
+                  Translate Y
+                </label>
+                <input
+                  className="form-control"
+                  name="translateY"
+                  type="number"
+                  value={this.props.data.configurations.translateY}
+                  onChange={this.handleChange}
+                />
+              </div>
+            </div>
 
-          <div className="prop-container">
-            <div>
-              <label className="prop" htmlFor="translateX">
-                Translate X
+            <div className="prop-container">
+              <label className="prop" htmlFor="initialDepth">
+                Initial Depth
               </label>
               <input
                 className="form-control"
-                name="translateX"
-                type="number"
-                value={this.props.data.configurations.translateX}
+                style={{color: 'grey'}}
+                name="initialDepth"
+                type="text"
+                value={this.props.data.configurations.initialDepth}
                 onChange={this.handleChange}
               />
             </div>
-            <div>
-              <label className="prop" htmlFor="translateY">
-                Translate Y
+
+            <div className="prop-container">
+              <label className="prop" htmlFor="depthFactor">
+                Depth Factor
               </label>
               <input
                 className="form-control"
-                name="translateY"
+                name="depthFactor"
                 type="number"
-                value={this.props.data.configurations.translateY}
+                defaultValue={this.props.data.configurations.depthFactor}
                 onChange={this.handleChange}
               />
             </div>
-          </div>
 
-          <div className="prop-container">
-            <label className="prop" htmlFor="initialDepth">
-              Initial Depth
-            </label>
-            <input
-              className="form-control"
-              style={{color: 'grey'}}
-              name="initialDepth"
-              type="text"
-              value={this.props.data.configurations.initialDepth}
-              onChange={this.handleChange}
-            />
-          </div>
+            {/* <div className="prop-container prop">{`Zoomable: ${this.state.zoomable}`}</div> */}
 
-          <div className="prop-container">
-            <label className="prop" htmlFor="depthFactor">
-              Depth Factor
-            </label>
-            <input
-              className="form-control"
-              name="depthFactor"
-              type="number"
-              defaultValue={this.props.data.configurations.depthFactor}
-              onChange={this.handleChange}
-            />
-          </div>
+            <div className="prop-container">
+              <label className="prop" htmlFor="zoom">
+                Zoom
+              </label>
+              <input
+                className="form-control"
+                name="zoom"
+                type="number"
+                defaultValue={this.props.data.configurations.zoom}
+                onChange={this.handleFloatChange}
+              />
+            </div>
 
-          {/* <div className="prop-container prop">{`Zoomable: ${this.state.zoomable}`}</div> */}
+            <div className="prop-container">
+              <span className="prop prop-large">Scale Extent</span>
+              <label className="sub-prop" htmlFor="scaleExtentMin">
+                Min
+              </label>
+              <input
+                className="form-control"
+                name="scaleExtentMin"
+                type="number"
+                defaultValue={this.props.data.configurations.scaleExtent.min}
+                onChange={evt =>
+                  this.setScaleExtent({
+                    min: parseFloat(evt.target.value),
+                    max: this.props.data.configurations.scaleExtent.max,
+                  })
+                }
+              />
+              <label className="sub-prop" htmlFor="scaleExtentMax">
+                Max
+              </label>
+              <input
+                className="form-control"
+                name="scaleExtentMax"
+                type="number"
+                defaultValue={this.props.data.configurations.scaleExtent.max}
+                onChange={evt =>
+                  this.setScaleExtent({
+                    min: this.props.data.configurations.scaleExtent.min,
+                    max: parseFloat(evt.target.value),
+                  })
+                }
+              />
+            </div>
 
-          <div className="prop-container">
-            <label className="prop" htmlFor="zoom">
-              Zoom
-            </label>
-            <input
-              className="form-control"
-              name="zoom"
-              type="number"
-              defaultValue={this.props.data.configurations.zoom}
-              onChange={this.handleFloatChange}
-            />
-          </div>
+            <div className="prop-container">
+              <span className="prop prop-large">Node separation</span>
+              <label className="sub-prop" htmlFor="separationSiblings">
+                Siblings
+              </label>
+              <input
+                className="form-control"
+                name="separationSiblings"
+                type="number"
+                defaultValue={this.props.data.configurations.separation.siblings}
+                onChange={evt =>
+                  this.setSeparation({
+                    siblings: parseFloat(evt.target.value),
+                    nonSiblings: this.props.data.configurations.separation.nonSiblings,
+                  })
+                }
+              />
+              <label className="sub-prop" htmlFor="separationNonSiblings">
+                Non-Siblings
+              </label>
+              <input
+                className="form-control"
+                name="separationNonSiblings"
+                type="number"
+                defaultValue={this.props.data.configurations.separation.nonSiblings}
+                onChange={evt =>
+                  this.setSeparation({
+                    siblings: this.props.data.configurations.separation.siblings,
+                    nonSiblings: parseFloat(evt.target.value),
+                  })
+                }
+              />
+            </div>
 
-          <div className="prop-container">
-            <span className="prop prop-large">Scale Extent</span>
-            <label className="sub-prop" htmlFor="scaleExtentMin">
-              Min
-            </label>
-            <input
-              className="form-control"
-              name="scaleExtentMin"
-              type="number"
-              defaultValue={this.props.data.configurations.scaleExtent.min}
-              onChange={evt =>
-                this.setScaleExtent({
-                  min: parseFloat(evt.target.value),
-                  max: this.props.data.configurations.scaleExtent.max,
-                })
-              }
-            />
-            <label className="sub-prop" htmlFor="scaleExtentMax">
-              Max
-            </label>
-            <input
-              className="form-control"
-              name="scaleExtentMax"
-              type="number"
-              defaultValue={this.props.data.configurations.scaleExtent.max}
-              onChange={evt =>
-                this.setScaleExtent({
-                  min: this.props.data.configurations.scaleExtent.min,
-                  max: parseFloat(evt.target.value),
-                })
-              }
-            />
-          </div>
+            <div className="prop-container">
+              <span className="prop prop-large">Node size</span>
+              <label className="sub-prop" htmlFor="nodeSizeX">
+                X
+              </label>
+              <input
+                className="form-control"
+                name="nodeSizeX"
+                type="number"
+                defaultValue={this.props.data.configurations.nodeSize.x}
+                onChange={evt =>
+                  this.setNodeSize({x: parseFloat(evt.target.value), y: this.props.data.configurations.nodeSize.y})
+                }
+              />
+              <label className="sub-prop" htmlFor="nodeSizeY">
+                Y
+              </label>
+              <input
+                className="form-control"
+                name="nodeSizeY"
+                type="number"
+                defaultValue={this.props.data.configurations.nodeSize.y}
+                onChange={evt =>
+                  this.setNodeSize({x: this.props.data.configurations.nodeSize.x, y: parseFloat(evt.target.value)})
+                }
+              />
+            </div>
 
-          <div className="prop-container">
-            <span className="prop prop-large">Node separation</span>
-            <label className="sub-prop" htmlFor="separationSiblings">
-              Siblings
-            </label>
-            <input
-              className="form-control"
-              name="separationSiblings"
-              type="number"
-              defaultValue={this.props.data.configurations.separation.siblings}
-              onChange={evt =>
-                this.setSeparation({
-                  siblings: parseFloat(evt.target.value),
-                  nonSiblings: this.props.data.configurations.separation.nonSiblings,
-                })
-              }
-            />
-            <label className="sub-prop" htmlFor="separationNonSiblings">
-              Non-Siblings
-            </label>
-            <input
-              className="form-control"
-              name="separationNonSiblings"
-              type="number"
-              defaultValue={this.props.data.configurations.separation.nonSiblings}
-              onChange={evt =>
-                this.setSeparation({
-                  siblings: this.props.data.configurations.separation.siblings,
-                  nonSiblings: parseFloat(evt.target.value),
-                })
-              }
-            />
-          </div>
-
-          <div className="prop-container">
-            <span className="prop prop-large">Node size</span>
-            <label className="sub-prop" htmlFor="nodeSizeX">
-              X
-            </label>
-            <input
-              className="form-control"
-              name="nodeSizeX"
-              type="number"
-              defaultValue={this.props.data.configurations.nodeSize.x}
-              onChange={evt =>
-                this.setNodeSize({x: parseFloat(evt.target.value), y: this.props.data.configurations.nodeSize.y})
-              }
-            />
-            <label className="sub-prop" htmlFor="nodeSizeY">
-              Y
-            </label>
-            <input
-              className="form-control"
-              name="nodeSizeY"
-              type="number"
-              defaultValue={this.props.data.configurations.nodeSize.y}
-              onChange={evt =>
-                this.setNodeSize({x: this.props.data.configurations.nodeSize.x, y: parseFloat(evt.target.value)})
-              }
-            />
-          </div>
-
-          <div className="prop-container">
-            <label className="prop" htmlFor="transitionDuration">
-              Transition Duration
-            </label>
-            <input
-              className="form-control"
-              name="transitionDuration"
-              type="number"
-              value={this.props.data.configurations.transitionDuration}
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
+            <div className="prop-container">
+              <label className="prop" htmlFor="transitionDuration">
+                Transition Duration
+              </label>
+              <input
+                className="form-control"
+                name="transitionDuration"
+                type="number"
+                value={this.props.data.configurations.transitionDuration}
+                onChange={this.handleChange}
+              />
+            </div>
+          </TabPanel>
+        </Tabs>
       </div>
     );
   }

@@ -29,7 +29,8 @@
   display: flex;
   flex-direction: column;
   flex-basis: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
+  margin: 4px;
 }
 
 .state-container {
@@ -79,7 +80,7 @@
   background-color: #2d3748;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
-  
+
 .btn-controls:hover,
 .btn-controls:focus,
 .btn-controls:active {
@@ -87,10 +88,17 @@
   border-color: #f7fafc;
 }
 
-.tree-stats-container {
-  text-align: center;
+.header-container {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
   padding: 0.5rem 2rem;
   border-bottom: 1px solid #2d3748;
+}
+
+.tree-stats-container {
+  text-align: center;
   font-weight: bold;
 }
 
@@ -106,3 +114,15 @@
   stroke-width: 10;
 }
 
+.flex-container-vertical {
+  display: flex;
+  flex-flow: column;
+}
+
+.flex-conservative {
+  flex: 0 1 auto;
+}
+
+.flex-greedy {
+  flex: 1 1 auto;
+}
