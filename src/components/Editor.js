@@ -52,6 +52,15 @@ const countNodes = (count = 0, n) => {
   return n.children.reduce((sum, child) => countNodes(sum, child), count);
 };
 
+function getEditDataFileLink() {
+  const matches = window.location.href.match(/https:\/\/(.*)\.github.io\/(.*)\//);
+  if (!matches) {
+    return 'https://github.com/reubenjohn/family-tree-editor/edit/master/src/data/data.json';
+  }
+  const [_, owner, projectPath] = matches;
+  return `https://github.com/${owner}/${projectPath}/edit/master/src/data/data.json`;
+}
+
 class Editor extends Component {
   constructor(props) {
     super(props);
@@ -250,7 +259,8 @@ class Editor extends Component {
                     <li>Create a copy of this website (you only need to do this once)</li>
                     <li>Copy all your changes using the 'Copy Tree & Configurations' button below</li>
                     <li>Open your <a
-                      href={`${data.repositoryLink}/edit/master/src/data/data.json`}>data file</a> and
+                      href={getEditDataFileLink()}
+                      target='_blank'>data file</a> and
                       paste your changes there.<br/>
                       Finally, hit the 'Commit changes' button at the bottom.
                     </li>
@@ -285,7 +295,7 @@ class Editor extends Component {
                 <input
                   type="text"
                   value={this.state.title}
-                  onChange={(event) => this.setTitle(event)}
+                  onChange={(event) => this.setTitle(event.target.value)}
                 />
               </div>
 

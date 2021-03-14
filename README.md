@@ -31,8 +31,7 @@ Type `data.json`:
 ![data.json](screenshots/data.json.png)
 3. Edit the file:  
 ![edit](screenshots/edit.png)  
-First update the `repositoryLink` to match that of your repository link in your browser. 
-Let's also give your family tree a title of your choosing:  
+Let's start by also giving your family tree a `title` of your choosing:  
 ![Family Tree Title](screenshots/family_tree_title.png)  
 4. Describe what your changed and click 'Commit changes':  
 ![Commit changes](screenshots/commit.png)
