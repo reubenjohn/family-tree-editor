@@ -1,4 +1,78 @@
 {
+  "tree": {
+    "name": "CEO",
+    "attributes": {},
+    "children": [
+      {
+        "name": "Manager",
+        "attributes": {
+          "Department": "Production"
+        },
+        "children": [
+          {
+            "name": "Foreman",
+            "attributes": {
+              "Department": "Fabrication"
+            },
+            "children": [
+              {
+                "name": "Workers",
+                "attributes": {},
+                "children": null
+              }
+            ]
+          },
+          {
+            "name": "Foreman",
+            "attributes": {
+              "Department": "Assembly"
+            },
+            "children": [
+              {
+                "name": "Workers",
+                "attributes": {},
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Manager",
+        "attributes": {
+          "Department": "Marketing"
+        },
+        "children": [
+          {
+            "name": "Sales Officer",
+            "attributes": {
+              "Department": "A"
+            },
+            "children": [
+              {
+                "name": "Salespeople",
+                "attributes": {},
+                "children": null
+              }
+            ]
+          },
+          {
+            "name": "Sales Officer",
+            "attributes": {
+              "Department": "B"
+            },
+            "children": [
+              {
+                "name": "Salespeople",
+                "attributes": {},
+                "children": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "configurations": {
     "title": "My Family Tree",
     "orientation": "vertical",
@@ -46,79 +120,5 @@
         }
       }
     }
-  },
-  "tree": {
-    "name": "CEO",
-    "attributes": {},
-    "children": [
-      {
-        "name": "Manager",
-        "attributes": {
-          "Department": "Production"
-        },
-        "children": [
-          {
-            "name": "Foreman",
-            "attributes": {
-              "Department": "Fabrication"
-            },
-            "children": [
-              {
-                "name": "Workers",
-                "attributes": {},
-                "children": []
-              }
-            ]
-          },
-          {
-            "name": "Foreman",
-            "attributes": {
-              "Department": "Assembly"
-            },
-            "children": [
-              {
-                "name": "Workers",
-                "attributes": {},
-                "children": []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Manager",
-        "attributes": {
-          "Department": "Marketing"
-        },
-        "children": [
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "A"
-            },
-            "children": [
-              {
-                "name": "Salespeople",
-                "attributes": {},
-                "children": []
-              }
-            ]
-          },
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "B"
-            },
-            "children": [
-              {
-                "name": "Salespeople",
-                "attributes": {},
-                "children": []
-              }
-            ]
-          }
-        ]
-      }
-    ]
   }
 }

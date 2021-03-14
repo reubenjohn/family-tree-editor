@@ -76,6 +76,11 @@ export function parseAncestryNotation(text) {
         tree = entry.data;
       }
     });
+
+  Object.values(nodeMap)
+    .filter(entry => entry.data.children.length === 0)
+    .forEach(entry => entry.data.children = null);
+
   if (tree === null)
     throw Error('At least one entry must exist with id=1 to represent the original ancestor.');
   return tree;

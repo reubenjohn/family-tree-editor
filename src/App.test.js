@@ -27,7 +27,7 @@ Date of death=
           'Date of birth': '',
           'Date of death': '',
         },
-        children: [],
+        children: null,
       }],
   }
 };
