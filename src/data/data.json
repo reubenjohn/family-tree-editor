@@ -4,8 +4,8 @@
     "title": "Manappallil Family Tree",
     "orientation": "vertical",
     "translate": {
-      "x": 573.775,
-      "y": 476
+      "x": 328.4199951171875,
+      "y": 250
     },
     "pathFunc": "diagonal",
     "renderCustomNodeElement": "svg",
@@ -70,7 +70,7 @@
               "Date Of Birth": "Unknown",
               "Date Of Death": "Unknown"
             },
-            "children": null
+            "children": []
           },
           {
             "name": "M. G. Tommy",
@@ -78,7 +78,15 @@
               "Date Of Birth": "Unknown",
               "Date Of Death": "Unknown"
             },
-            "children": null
+            "children": []
+          },
+          {
+            "name": "M. G. Cheriyan",
+            "attributes": {
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
+            },
+            "children": []
           }
         ]
       },
@@ -88,7 +96,7 @@
           "Date Of Birth": "Unknown",
           "Date Of Death": "Unknown"
         },
-        "children": null
+        "children": []
       }
     ]
   }
