@@ -1,10 +1,10 @@
 {
   "configurations": {
-    "title": "My Family Tree",
+    "title": "Manappallil Family Tree",
     "orientation": "vertical",
     "translate": {
-      "x": 573.775,
-      "y": 476
+      "x": 328.4199951171875,
+      "y": 250
     },
     "pathFunc": "diagonal",
     "renderCustomNodeElement": "svg",
@@ -50,67 +50,52 @@
     "shouldCollapseNeighborNodes": false
   },
   "tree": {
-    "name": "CEO",
+    "name": "Cheriyan Alintethekkthil Pandalam",
+    "attributes": {
+      "Date Of Birth": "Unknown",
+      "Date Of Death": "Unknown"
+    },
     "children": [
       {
-        "name": "Manager",
+        "name": "Gheevarghese Cheriyan",
         "attributes": {
-          "Department": "Production"
+          "Date Of Birth": "Unknown",
+          "Date Of Death": "Unknown"
         },
         "children": [
           {
-            "name": "Foreman",
+            "name": "M. G. Cheria",
             "attributes": {
-              "Department": "Fabrication"
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
             },
-            "children": [
-              {
-                "name": "Workers"
-              }
-            ]
+            "children": []
           },
           {
-            "name": "Foreman",
+            "name": "M. G. Tommy",
             "attributes": {
-              "Department": "Assembly"
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
             },
-            "children": [
-              {
-                "name": "Workers"
-              }
-            ]
+            "children": []
+          },
+          {
+            "name": "M. G. Cheriyan",
+            "attributes": {
+              "Date Of Birth": "Unknown",
+              "Date Of Death": "Unknown"
+            },
+            "children": []
           }
         ]
       },
       {
-        "name": "Manager",
+        "name": "Mathai Cheriyan",
         "attributes": {
-          "Department": "Marketing"
+          "Date Of Birth": "Unknown",
+          "Date Of Death": "Unknown"
         },
-        "children": [
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "A"
-            },
-            "children": [
-              {
-                "name": "Salespeople"
-              }
-            ]
-          },
-          {
-            "name": "Sales Officer",
-            "attributes": {
-              "Department": "B"
-            },
-            "children": [
-              {
-                "name": "Salespeople"
-              }
-            ]
-          }
-        ]
+        "children": []
       }
     ]
   }
