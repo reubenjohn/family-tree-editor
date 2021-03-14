@@ -17,7 +17,7 @@ const customNodeFnMapping = {
   },
   mixed: {
     description: 'MixedNodeElement - SVG `circle` + `foreignObject` label',
-    fn: ({nodeDatum, toggleNode, configs}) => (
+    fn: ({nodeDatum, toggleNode}, configs) => (
       <MixedNodeElement
         nodeData={nodeDatum}
         triggerNodeToggle={toggleNode}

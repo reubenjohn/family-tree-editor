@@ -1,6 +1,6 @@
 {
-  "name": "rd3t-demo",
-  "version": "0.1.0",
+  "name": "family-tree-editor",
+  "version": "0.9.0",
   "private": true,
   "homepage": "https://mjohnjoy.github.io/manappallil",
   "dependencies": {

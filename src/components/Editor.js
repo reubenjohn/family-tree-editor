@@ -10,6 +10,7 @@ import data from './../data/data.json';
 import {parseAncestryNotation, printAncestryNotation} from '../utils/TreeConverter';
 
 const orgChartJson = data.tree;
+const configurations = data.configurations;
 
 const customNodeFnMapping = {
   svg: {
@@ -69,43 +70,7 @@ class Editor extends Component {
       data: orgChartJson,
       proposedAncestry: printAncestryNotation(orgChartJson),
       totalNodeCount: countNodes(0, Array.isArray(orgChartJson) ? orgChartJson[0] : orgChartJson),
-      title: 'My Family Tree',
-      orientation: 'vertical',
-      translateX: 200,
-      translateY: 300,
-      pathFunc: 'diagonal',
-      collapsible: true,
-      shouldCollapseNeighborNodes: false,
-      initialDepth: 1,
-      depthFactor: null,
-      zoomable: true,
-      zoom: 1,
-      scaleExtent: {min: 0.1, max: 1},
-      separation: {siblings: 2, nonSiblings: 2},
-      nodeSize: {x: 200, y: 200},
-      enableLegacyTransitions: false,
-      transitionDuration: 500,
-      renderCustomNodeElement: 'svg',
-      styles: {
-        nodes: {
-          node: {
-            circle: {
-              fill: '#52e2c5',
-            },
-            attributes: {
-              stroke: '#000',
-            },
-          },
-          leafNode: {
-            circle: {
-              fill: 'transparent',
-            },
-            attributes: {
-              stroke: '#000',
-            },
-          },
-        },
-      },
+      ...configurations,
     };
 
     this.setTitle = this.setTitle.bind(this);
@@ -119,6 +84,32 @@ class Editor extends Component {
     this.setSeparation = this.setSeparation.bind(this);
     this.setNodeSize = this.setNodeSize.bind(this);
   }
+
+  generateConfigs = () => ({
+    title: this.state.title,
+    orientation: this.state.orientation,
+    translateX: this.state.translateX,
+    translateY: this.state.translateY,
+    pathFunc: this.state.pathFunc,
+    renderCustomNodeElement: this.state.renderCustomNodeElement,
+    collapsible: this.state.collapsible,
+    shouldCollapseNeighborNodes: this.state.shouldCollapseNeighborNodes,
+    initialDepth: this.state.initialDepth,
+    depthFactor: this.state.depthFactor,
+    zoomable: this.state.zoomable,
+    zoom: this.state.zoom,
+    scaleExtent: this.state.scaleExtent,
+    separation: this.state.separation,
+    nodeSize: this.state.nodeSize,
+    enableLegacyTransitions: this.state.enableLegacyTransitions,
+    transitionDuration: this.state.transitionDuration,
+    styles: this.state.styles,
+  });
+
+  generateDataAndConfigurations = () => ({
+    configurations: this.generateConfigs(),
+    tree: this.state.data,
+  });
 
   setTitle(title) {
     this.setState({title});
@@ -199,35 +190,9 @@ class Editor extends Component {
   componentDidMount() {
     const dimensions = this.treeContainer.getBoundingClientRect();
     this.setState({
-      translateX: dimensions.width / 2.5,
-      translateY: dimensions.height / 2,
+      translate: {x: dimensions.width / 2.5, y: dimensions.height / 2},
     });
   }
-
-  generateConfigs = () => ({
-    title: this.state.title,
-    orientation: this.state.orientation,
-    translate: {x: this.state.translateX, y: this.state.translateY},
-    pathFunc: this.state.pathFunc,
-    renderCustomNodeElement: this.state.renderCustomNodeElement,
-    collapsible: this.state.collapsible,
-    initialDepth: this.state.initialDepth,
-    zoomable: this.state.zoomable,
-    zoom: this.state.zoom,
-    scaleExtent: this.state.scaleExtent,
-    nodeSize: this.state.nodeSize,
-    separation: this.state.separation,
-    enableLegacyTransitions: this.state.enableLegacyTransitions,
-    transitionDuration: this.state.transitionDuration,
-    depthFactor: this.state.depthFactor,
-    styles: this.state.styles,
-    shouldCollapseNeighborNodes: this.state.shouldCollapseNeighborNodes,
-  });
-
-  generateDataAndConfigurations = () => ({
-    configurations: this.generateConfigs(),
-    tree: this.state.data,
-  });
 
   tryUpdateAncestry(notation) {
     this.setState({proposedAncestry: notation});
