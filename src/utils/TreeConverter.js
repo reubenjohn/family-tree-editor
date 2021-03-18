@@ -1,5 +1,5 @@
-const idRegex = /1(\.[1-9]+)*$/;
-const parentIdRegex = /(1(\.[1-9]+)*)\.[1-9]+$/;
+const idRegex = /^1(\.[1-9][0-9]*)*$/;
+const parentIdRegex = /^(1(\.[1-9][0-9]*)*)\.[1-9][0-9]*$/;
 
 function extract(ancestryEntry, entryData, key) {
   if (!(key in entryData))
